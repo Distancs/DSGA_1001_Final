@@ -22,14 +22,25 @@ The Model part has been uploaded in Model_and_Evaluation notebook.
 
 1. Combined Data in FINAL_version_advanced_adj_score.csv and final_version_yeah.csv to produce data_combined.csv. All models are based on this combined data set.
 
-2. Clearly we have a regression problem. The Response is the 'Adjusted_BoxOffice' instead of raw BoxOffice.
+2. Some simple EDA shows data has huge variance. so I truncate the data a bit:
+
+         data = data[(data.BoxOffice>=1)  & (data.BoxOffice>=100)  &
+                     (data.Runtime >= 50) & (data.Runtime <= 200) & 
+                     (data.Year >= 1990)]
+   Films that are shorter than 50 minutes (are probably TV Series episodes). Box Office less than 1 Million are probably just some regional small production. 
+
+2. Clearly we have a regression problem. The Response is the 'Adjusted_BoxOffice' instead of raw BoxOffice.Evaluation Matrix used here is In sample R square and Out of sample Rsquare.
 
    Baseline model 1: Simple LR with 4 features year, genre(dummy), Runtime, CountryCount. Out-of-sample-Rsq (oosr) = 13
+   
    Baseline model 2: Simple LR with above features and all the raw ratings. Out-of-sample Rsq = 28. This is the model with (serious) data leakage.
+   
    Baseline model 1 is the one we need to beat and Baseline 2 is the model we try to catch up. 
    
    Improved Model 1: Simple LR, with useless feature discarded (by P value) and NLP_Score included, oosr = 20.4
+   
    Improved Model 2: RegressionTree with cross-validation on all features except raw ratings. oosr = 16.8
+   
    Improved Model 3: NN on all features except raw ratings, oosr = 23.6
    
 3. Conclusion: With our NLP_Score and appropriate model (appears to be NN here), we can capture (23.6-13)/(28-13) = 75.7% of the variance that can previously be explained only by raw-ratings, which is not available prior to movie release. So in terms of model it is quite successful.

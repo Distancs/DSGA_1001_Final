@@ -9,6 +9,7 @@ output:
 ---
 
 ```{r}
+setwd("~/Dropbox/College/Grad/Fall 2018/DS-GA 1001/Project/DSGA_1001_Final")
 library(ggplot2)
 ```
 
@@ -26,7 +27,8 @@ ggplot(data = data) +
 ```{r}
 ggplot(data = data[data$Year>=2008 & data$Adjusted_BoxOffice>=6 ,]) + 
     geom_point(mapping = aes(y = log(Adjusted_BoxOffice), x = Year)) +
-    ggtitle("Movies In Recent 10 Years has more than 10e6 Box office")
+    ggtitle("Movies In Past 10 Years has over one million Box Office") +
+    theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ```{r}
@@ -51,7 +53,8 @@ ggplot(data = data) +
 ggplot(data = data) + 
     geom_point(mapping = aes(x = log(Adjusted_Budgets), 
                              y = log(Adjusted_BoxOffice), 
-                             color = as.factor(Country_count)))
+                             colour = as.factor(Country_count))) + 
+    labs(colour="Number of Countries")
 ```
 
 ## Bar Plot
@@ -70,7 +73,7 @@ ggplot(data = data) +
 ggplot(data = data[data$Year>=2008,]) + 
   geom_bar(mapping = aes(x = imdbRating)) + 
     ggtitle("Movies In Recent 10 Years") +
-    theme(plot.title = element_text(lineheight=.8, face="bold"))
+    theme(plot.title = element_text(lineheight=.8, face="bold", hjust = 0.5))
 ```
 
 ## Boxplot
@@ -78,13 +81,16 @@ ggplot(data = data[data$Year>=2008,]) +
 ```{r}
 ggplot(data = data[data$Year>=2008,], 
        mapping = aes(x = as.factor(Year), y = imdbRating, 
-                     colour = as.factor(Year))) + geom_boxplot()
+                     colour = as.factor(Year))) + 
+    aes(x=Year) + geom_boxplot() + 
+    labs(colour="Year")
 ```
 
 ```{r}
 ggplot(data = data[data$Year>=2008,], 
        mapping = aes(x = as.factor(Year), y = log(Adjusted_BoxOffice), 
-                     colour = as.factor(Year))) + geom_boxplot()
+                     colour = as.factor(Year))) + aes(x=Year) + 
+    geom_boxplot() + labs(colour="Year")
 ```
 
 ## USA vs CHINA
@@ -112,5 +118,6 @@ USA_CHINA = rbind(CHINA, USA)
 
 ```{r}
 ggplot(data = USA_CHINA) + 
-  geom_point(mapping = aes(y = imdbRating, x = as.factor(CRY)))
+  geom_point(mapping = aes(y = imdbRating, x = as.factor(CRY))) + 
+    aes(x=Country)
 ```

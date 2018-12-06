@@ -1,0 +1,115 @@
+---
+title: "Visualization"
+author: "Haochen Wang"
+date: "12/5/2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+data <- read.csv("data_combined_budget.csv")
+```
+
+## Scatter Plot
+
+```{r}
+ggplot(data = data) + 
+    geom_point(mapping = aes(y = log(Adjusted_BoxOffice), x = Year))
+```
+
+```{r}
+ggplot(data = data[data$Year>=2008 & data$Adjusted_BoxOffice>=6 ,]) + 
+    geom_point(mapping = aes(y = log(Adjusted_BoxOffice), x = Year)) +
+    ggtitle("Movies In Recent 10 Years has more than 10e6 Box office")
+```
+
+```{r}
+ggplot(data = data) + 
+    geom_point(mapping = aes(x = log(Adjusted_BoxOffice), y = Year, 
+               color = imdbRating)) + coord_flip()
+```
+
+```{r}
+ggplot(data = data) + 
+    geom_point(mapping = aes(x = log(Adjusted_BoxOffice), y = Year, 
+               color = log(Adjusted_Budgets))) + coord_flip()
+```
+
+```{r}
+ggplot(data = data) + 
+    geom_point(mapping = aes(x = log(Adjusted_Budgets), 
+                             y = log(Adjusted_BoxOffice), color = Year))
+```
+
+```{r}
+ggplot(data = data) + 
+    geom_point(mapping = aes(x = log(Adjusted_Budgets), 
+                             y = log(Adjusted_BoxOffice), 
+                             color = as.factor(Country_count)))
+```
+
+## Bar Plot
+
+```{r}
+ggplot(data = data) + 
+  geom_bar(mapping = aes(x = Year))
+```
+
+```{r}
+ggplot(data = data) + 
+  geom_bar(mapping = aes(x = imdbRating))
+```
+
+```{r}
+ggplot(data = data[data$Year>=2008,]) + 
+  geom_bar(mapping = aes(x = imdbRating)) + 
+    ggtitle("Movies In Recent 10 Years") +
+    theme(plot.title = element_text(lineheight=.8, face="bold"))
+```
+
+## Boxplot
+
+```{r}
+ggplot(data = data[data$Year>=2008,], 
+       mapping = aes(x = as.factor(Year), y = imdbRating, 
+                     colour = as.factor(Year))) + geom_boxplot()
+```
+
+```{r}
+ggplot(data = data[data$Year>=2008,], 
+       mapping = aes(x = as.factor(Year), y = log(Adjusted_BoxOffice), 
+                     colour = as.factor(Year))) + geom_boxplot()
+```
+
+## USA vs CHINA
+
+```{r}
+USA = data[grep("USA", data$Country), ]
+CHINA = data[grep("China", data$Country), ]
+```
+
+```{r}
+ggplot(data = USA) + 
+  geom_bar(mapping = aes(x = imdbRating))
+```
+
+```{r}
+ggplot(data = CHINA) + 
+  geom_bar(mapping = aes(x = imdbRating))
+```
+
+```{r}
+CHINA[, "CRY"] = "CHINA"
+USA[, "CRY"] = "USA"
+USA_CHINA = rbind(CHINA, USA)
+```
+
+```{r}
+ggplot(data = USA_CHINA) + 
+  geom_point(mapping = aes(y = imdbRating, x = as.factor(CRY)))
+```
